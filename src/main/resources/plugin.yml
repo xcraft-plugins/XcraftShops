@@ -1,0 +1,10 @@
+name: ArdaShops
+main: de.ardania.jan.ardashops.Main
+version: 0.1
+api-version: 1.14
+author: MyNameIsJan
+prefix: ArdaShops
+
+commands:
+  as:
+    usage: /as
