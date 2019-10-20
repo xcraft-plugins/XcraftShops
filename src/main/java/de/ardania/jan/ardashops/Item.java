@@ -1,17 +1,10 @@
 package de.ardania.jan.ardashops;
 
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.enchantments.EnchantmentWrapper;
-
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class Item {
     private String id;
     private Map<String, Integer> enchantments;
-    private Map<Enchantment, Integer> enchantmentsOnItem = new HashMap<Enchantment, Integer>();
     private int amountToSell;
     private int priceToSell;
     private int amountInStorage;

@@ -22,5 +22,6 @@ public class Main extends JavaPlugin {
 
     public void onDisable(){
         //TODO save Files maybe?
+        fileHandler.saveShops();
     }
 }
