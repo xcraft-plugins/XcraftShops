@@ -1,7 +1,8 @@
-package de.ardania.jan.ardashops.util;
+package de.ardania.jan.ardashops.handler;
 
 import de.ardania.jan.ardashops.entities.Item;
 import de.ardania.jan.ardashops.entities.Shop;
+import de.ardania.jan.ardashops.util.SerializersAndDeserializers;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
@@ -11,7 +12,7 @@ import java.util.*;
 import static de.ardania.jan.ardashops.Main.DB;
 import static de.ardania.jan.ardashops.Main.LOGGER;
 
-public class DatabaseData {
+public class DatabaseHandler {
 
     private List<Item> getItemList(ResultSet resultSet) throws SQLException {
         Item item = null;
