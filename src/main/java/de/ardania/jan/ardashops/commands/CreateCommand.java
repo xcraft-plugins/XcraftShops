@@ -1,7 +1,7 @@
 package de.ardania.jan.ardashops.commands;
 
 import de.ardania.jan.ardashops.entities.Shop;
-import de.ardania.jan.ardashops.util.DatabaseData;
+import de.ardania.jan.ardashops.handler.DatabaseHandler;
 import org.bukkit.entity.Player;
 
 import java.sql.SQLException;
@@ -21,10 +21,10 @@ public class CreateCommand {
 
     private void createShop(Player player) throws SQLException {
         Shop shop = new Shop();
-        DatabaseData databaseData = new DatabaseData();
+        DatabaseHandler databaseHandler = new DatabaseHandler();
         shop.setOwnerUUID(player.getUniqueId());
         shop.setLocation(player.getLocation());
-        databaseData.insertShop(shop);
+        databaseHandler.insertShop(shop);
         LOGGER.log(Level.INFO, "Shop created! ShopOwnerUUID: " + shop.getOwnerUUID() + ", Location: " + shop.getLocation().toString());
     }
 }

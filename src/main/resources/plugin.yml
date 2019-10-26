@@ -4,6 +4,8 @@ version: 0.1
 api-version: 1.14
 author: MyNameIsJan
 prefix: ArdaShops
+depend:
+  - SQLibrary
 
 commands:
   as:
