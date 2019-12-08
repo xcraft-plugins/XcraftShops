@@ -1,13 +1,17 @@
 package de.ardania.jan.ardashops.commands;
 
 import de.ardania.jan.ardashops.handler.DatabaseHandler;
+import org.bukkit.Material;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 
 public class CommandHandler implements CommandExecutor {
 
@@ -29,7 +33,7 @@ public class CommandHandler implements CommandExecutor {
             else if (args[0].equals("create")) {
                 createCommand.createShop(player);
             } else if (args[0].equals("open")) {
-
+                player.openInventory(openCommand.openShop(1));
             }
         }
         return false;

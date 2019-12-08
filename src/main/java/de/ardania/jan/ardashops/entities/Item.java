@@ -1,13 +1,14 @@
 package de.ardania.jan.ardashops.entities;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.bukkit.inventory.ItemStack;
 
 @Getter
 @Setter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Item {
     private ItemStack item;
     private int amountToSell;

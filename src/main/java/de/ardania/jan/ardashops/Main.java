@@ -34,7 +34,7 @@ public class Main extends JavaPlugin {
         //Announcer
         announcer();
         //Commands & Listeners
-        getServer().getPluginManager().registerEvents(new OpenListener(), this);
+        getServer().getPluginManager().registerEvents(new OpenCommand(), this);
         getCommand("as").setExecutor(commandHandler);
         //DB Stuff
         sqlConnection();

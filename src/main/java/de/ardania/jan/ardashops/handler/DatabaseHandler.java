@@ -49,7 +49,7 @@ public class DatabaseHandler {
         ResultSet resultSet = null;
         Shop shop = null;
         try {
-            resultSet = DB.query("SELECT * FROM item i INNER JOIN shop s ON s.s_shopID=i.i_s_shopID WHERE  = " + shopID + ";");
+            resultSet = DB.query("SELECT * FROM item i INNER JOIN shop s ON s.s_shopID=i.i_s_shopID WHERE s_shopID = " + shopID + ";");
             shop = new Shop();
             shop.setOwnerUUID(SerializersAndDeserializers.deserializeByteArrayToObject(resultSet.getBytes("s_o_ownerID"), UUID.class));
             shop.setLocation(SerializersAndDeserializers.deserializeByteArrayToObject(resultSet.getBytes("s_shopLocation"), Location.class));
@@ -57,10 +57,12 @@ public class DatabaseHandler {
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString());
         } finally {
-            try {
-                resultSet.close();
-            } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.toString());
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    LOGGER.log(Level.SEVERE, e.toString());
+                }
             }
         }
         return shop;
