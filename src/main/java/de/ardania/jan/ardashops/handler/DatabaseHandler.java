@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import javax.sql.rowset.spi.TransactionalWriter;
 import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
@@ -44,7 +45,7 @@ public class DatabaseHandler {
         return itemStack;
     }
 
-    public Shop getShop(int shopID) {
+    public Shop getShopWithItems(int shopID) {
         ResultSet resultSet = null;
         Shop shop = null;
         try {
@@ -65,6 +66,22 @@ public class DatabaseHandler {
         return shop;
     }
 
+    public boolean ownerExist(UUID ownerID) {
+        try {
+            ResultSet rs = DB.query("SELECT * FROM owner;");
+            while (rs.next()) {
+                UUID dbOwnerUUID = SerializersAndDeserializers.deserializeByteArrayToObject(rs.getBytes("o_ownerID"), UUID.class);
+                if (dbOwnerUUID.equals(ownerID)) {
+                    return true;
+                }
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void insertOwner(@NotNull UUID ownerID) {
         PreparedStatement preparedStatement = null;
         int rows = 0;
@@ -72,6 +89,7 @@ public class DatabaseHandler {
             preparedStatement = DB.getConnection().prepareStatement("INSERT INTO owner(o_ownerID) VALUES(?)");
             preparedStatement.setBytes(1, SerializersAndDeserializers.serializeObjectToByteArray(ownerID));
             rows = preparedStatement.executeUpdate();
+            if (rows != 1) LOGGER.log(Level.INFO, MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_OWNER_INSERTION"));
             LOGGER.log(Level.SEVERE, e.toString());
@@ -79,11 +97,10 @@ public class DatabaseHandler {
             try {
                 preparedStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_STATEMENT_CLOSING"));
-                LOGGER.log(Level.SEVERE, e.toString());
+                LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_STATEMENT_CLOSING") + "\n" + e.toString());
             }
         }
-        if (rows == 0) LOGGER.info("Insert into owner failed!");
+
     }
 
     public void insertShop(@NotNull Shop shop) {
@@ -94,6 +111,7 @@ public class DatabaseHandler {
             preparedStatement.setBytes(1, SerializersAndDeserializers.serializeObjectToByteArray(shop.getLocation()));
             preparedStatement.setBytes(2, SerializersAndDeserializers.serializeObjectToByteArray(shop.getOwnerUUID()));
             rows = preparedStatement.executeUpdate();
+            if (rows == 0) LOGGER.log(Level.INFO, MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_SHOP_INSERTION"));
             LOGGER.log(Level.SEVERE, e.toString());
@@ -105,7 +123,7 @@ public class DatabaseHandler {
                 LOGGER.log(Level.SEVERE, e.toString());
             }
         }
-        if (rows == 0) LOGGER.info("Insert into shop failed!");
+
     }
 
     public void insertItem(@NotNull Item item) {
@@ -121,6 +139,7 @@ public class DatabaseHandler {
             preparedStatement.setBytes(6, SerializersAndDeserializers.serializeObjectToByteArray(item.getItem()));
             preparedStatement.setInt(7, item.getShopID());
             rows = preparedStatement.executeUpdate();
+            if (rows == 0) LOGGER.log(Level.INFO, MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_ITEM_INSERTION"));
             LOGGER.log(Level.SEVERE, e.toString());
@@ -132,6 +151,77 @@ public class DatabaseHandler {
                 LOGGER.log(Level.SEVERE, e.toString());
             }
         }
-        if (rows == 0) LOGGER.info("Insert into item failed!");
+
+    }
+
+    public void deleteShop(@NotNull Shop shop) {
+        Connection connection = DB.getConnection();
+        int deletedRowsFromShop = 0;
+        int deletedRowsFromItem = 0;
+
+        //Set auto-commit off for this connection
+        try {
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //Execute deletion on shop table
+        PreparedStatement deleteShopStatement = null;
+        try {
+            deleteShopStatement = connection.prepareStatement("DELETE FROM shop WHERE s_shopID=?");
+            deleteShopStatement.setInt(1, shop.getShopID());
+
+            deletedRowsFromShop = deleteShopStatement.executeUpdate();
+            if (deletedRowsFromShop != 1) {
+                connection.rollback();
+                LOGGER.log(Level.INFO, MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
+                return;
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_SHOP_DELETION") + "\n" + e.toString());
+        }
+
+        //Execute deletion on item table
+        PreparedStatement deleteItemStatement = null;
+        try {
+            deleteItemStatement = connection.prepareStatement("DELETE FROM item WHERE i_s_shopID=?");
+            deleteItemStatement.setInt(1, shop.getShopID());
+
+            deletedRowsFromItem = deleteItemStatement.executeUpdate();
+            if (deletedRowsFromItem != 1) {
+                connection.rollback();
+                LOGGER.log(Level.INFO, MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
+                return;
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_ITEM_DELETION") + "\n" + e.toString());
+        }
+
+        //Commit all transaction
+        try {
+            connection.commit();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_COMMIT") + "\n" + e.toString());
+        }
+    }
+
+    public void deleteItem(@NotNull Item item) {
+        int rowsAffected = 0;
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = DB.getConnection().prepareStatement("DELETE FROM item WHERE i_s_shopID=?;");
+            preparedStatement.setInt(1, item.getShopID());
+            rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected != 1) LOGGER.log(Level.INFO, MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_ITEM_DELETION") + "\n" + e.toString());
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_STATEMENT_CLOSING") + "\n" + e.toString());
+            }
+        }
     }
 }

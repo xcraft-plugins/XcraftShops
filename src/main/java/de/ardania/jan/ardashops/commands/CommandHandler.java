@@ -11,6 +11,15 @@ import java.sql.SQLException;
 
 public class CommandHandler implements CommandExecutor {
 
+    OpenCommand openCommand;
+    CreateCommand createCommand;
+    DatabaseHandler databaseHandler;
+
+    public CommandHandler() {
+        openCommand = new OpenCommand();
+        createCommand = new CreateCommand();
+        databaseHandler = new DatabaseHandler();
+    }
 
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
         Player player = sender instanceof Player ? (Player) sender : null;
@@ -18,10 +27,9 @@ public class CommandHandler implements CommandExecutor {
         if (player != null) {
             if (args.length < 1) HelpCommand.PluginInfo(player);
             else if (args[0].equals("create")) {
-                CreateCommand.createShop(player);
+                createCommand.createShop(player);
             } else if (args[0].equals("open")) {
-                OpenCommand openCommand = new OpenCommand(player);
-                player.openInventory(openCommand.getPage());
+
             }
         }
         return false;

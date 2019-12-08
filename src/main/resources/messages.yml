@@ -8,3 +8,7 @@ ERROR_OWNER_INSERTION: '§cFehler beim einfügen des Owners in die Datenbank! Ar
 ERROR_SHOP_INSERTION: '§cFehler beim einfügen des Shops in die Datenbank! Ara Ara'
 ERROR_ITEM_INSERTION: '§cFehler beim einfügen des Items in die Datenbank! Ara Ara'
 ERROR_STATEMENT_CLOSING: '§cFehler beim schließen eines Statements! Ara Ara'
+ERROR_NO_ROWS_AFFECTED: '§cStatement hat keine Rows Affected! Nani?!?'
+ERROR_SHOP_DELETION: '§cFehler beim löschen eines Shops! Ara Ara'
+ERROR_ITEM_DELETION: '§cFehler beim löschen von Items! Ara Ara'
+ERROR_COMMIT: '§cFehler beim commit! UmU'

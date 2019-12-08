@@ -14,13 +14,13 @@ public class CreateCommand extends DatabaseHandler {
         Shop shop = new Shop();
         shop.setOwnerUUID(player.getUniqueId());
         shop.setLocation(player.getLocation());
-        insertOwner(player.getUniqueId());
+        if (!ownerExist(player.getUniqueId())) insertOwner(player.getUniqueId());
         insertShop(shop);
         //ActiveMob mob = MythicMobs.inst().getMobManager().spawnMob("Shop", player.getLocation());
         //ItemStack item = new ItemStack(Material.DIAMOND, 1);
         //item.getItemMeta().setDisplayName(player.getUniqueId().toString());
         //mob.getEntity().equipItemHead(BukkitAdapter.adapt(item));
-        LOGGER.log(Level.INFO, "Shop created! ShopOwnerUUID: " + shop.getOwnerUUID() + ", Location: " + shop.getLocation().toString());
+        LOGGER.log(Level.INFO, "\nShop created for Player: " + player.getName() + "\nShopOwnerUUID: " + shop.getOwnerUUID() + "\n" + shop.getLocation().toString());
         player.sendMessage(MESSAGE.getString("PLUGIN_PREFIX") + MESSAGE.getString("SHOP_CREATED"));
     }
 }
