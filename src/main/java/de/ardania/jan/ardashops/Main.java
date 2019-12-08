@@ -1,8 +1,10 @@
 package de.ardania.jan.ardashops;
 
 import de.ardania.jan.ardashops.commands.CommandHandler;
+import de.ardania.jan.ardashops.commands.OpenCommand;
 import de.ardania.jan.ardashops.handler.ConfigHandler;
 import de.ardania.jan.ardashops.handler.MessageHandler;
+import de.ardania.jan.ardashops.listeners.OpenListener;
 import lib.PatPeter.SQLibrary.SQLite;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,11 +25,61 @@ public class Main extends JavaPlugin {
     public ConfigHandler configHandler;
 
     public void onEnable(){
+        //Setter
         PLUGIN = this;
         LOGGER = getLogger();
         commandHandler = new CommandHandler();
         messageHandler = new MessageHandler();
         configHandler = new ConfigHandler();
+        //Announcer
+        announcer();
+        //Commands & Listeners
+        getServer().getPluginManager().registerEvents(new OpenListener(), this);
+        getCommand("as").setExecutor(commandHandler);
+        //DB Stuff
+        sqlConnection();
+        try {
+            sqlTableCreation();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sqlTableCreation() throws SQLException {
+            DB.query("CREATE TABLE IF NOT EXISTS owner (\n" +
+                    "  o_ownerID blob PRIMARY KEY\n" +
+                    ");");
+
+            DB.query("CREATE TABLE IF NOT EXISTS shop (\n" +
+                    "  s_shopID int PRIMARY KEY,\n" +
+                    "  s_shopLocation blob not null,\n" +
+                    "  s_o_ownerID uuid,\n" +
+                    "  FOREIGN KEY (s_o_ownerID) REFERENCES owner (o_ownerID)\n" +
+                    ");");
+
+            DB.query("CREATE TABLE IF NOT EXISTS item (\n" +
+                    "  i_amountToSell int,\n" +
+                    "  i_amountInStorage int,\n" +
+                    "  i_priceToSell int,\n" +
+                    "  i_slotInInv int,\n" +
+                    "  i_pageInInv int,\n" +
+                    "  i_itemStack blob,\n" +
+                    "  i_s_shopID int,\n" +
+                    "  FOREIGN KEY (i_s_shopID) REFERENCES shop (s_shopID)\n" +
+                    ");");
+    }
+
+    private void sqlConnection(){
+        DB = new SQLite(LOGGER, "ArdaShops", getDataFolder().getAbsolutePath(), "shops", ".db");
+        try {
+            DB.open();
+        } catch (Exception e) {
+            LOGGER.info(e.getMessage());
+            getPluginLoader().disablePlugin(PLUGIN);
+        }
+    }
+
+    private void announcer(){
         LOGGER.info("\n"+"                  _        _____ _                     \n" +
                 "    /\\           | |      / ____| |                    \n" +
                 "   /  \\   _ __ __| | __ _| (___ | |__   ___  _ __  ___ \n" +
@@ -41,51 +93,5 @@ public class Main extends JavaPlugin {
                 "|  __| | '_ \\ / _` | '_ \\| |/ _ \\/ _` |\n" +
                 "| |____| | | | (_| | |_) | |  __/ (_| |\n" +
                 "|______|_| |_|\\__,_|_.__/|_|\\___|\\__,_|");
-        getCommand("as").setExecutor(commandHandler);
-        sqlConnection();
-        try {
-            sqlTableCheck();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void sqlTableCheck() throws SQLException {
-        Location l = null;
-        if (DB.checkTable("shop") && DB.checkTable("item")) {
-            LOGGER.info("Table already exists! Skip creation!");
-            return;
-        } else {
-            DB.query("CREATE TABLE IF NOT EXISTS shop (\n" +
-                    "  ownerUUID BLOB PRIMARY KEY NOT NULL,\n" +
-                    "  location BLOB NULL DEFAULT NULL\n" +
-                    "  );");
-
-            LOGGER.info("Table shop has been created!");
-
-            DB.query("CREATE TABLE IF NOT EXISTS item (\n" +
-                    "  amountToSell INT NULL DEFAULT NULL,\n" +
-                    "  priceToSell INT NULL DEFAULT NULL,\n" +
-                    "  amountInStorage INT NULL DEFAULT NULL,\n" +
-                    "  slotInInv INT NULL DEFAULT NULL,\n" +
-                    "  itemStack BLOB NULL DEFAULT NULL,\n" +
-                    "  itemDisplayName BLOB NULL DEFAULT NULL,\n" +
-                    "  itemLore BLOB NULL DEFAULT NULL,\n" +
-                    "  ownerUUID BLOB NULL DEFAULT NULL,\n" +
-                    "  FOREIGN KEY (ownerUUID) REFERENCES shop(ownerUUID)\n" +
-                    "    );");
-
-            LOGGER.info("Table item has been created!");
-        }
-    }
-
-    public void sqlConnection(){
-        DB = new SQLite(LOGGER, "ArdaShops", getDataFolder().getAbsolutePath(), "shops", ".db");
-        try {
-            DB.open();
-        } catch (Exception e) {
-            LOGGER.info(e.getMessage());
-            getPluginLoader().disablePlugin(PLUGIN);
-        }
     }
 }

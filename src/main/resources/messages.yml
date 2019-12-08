@@ -1,0 +1,6 @@
+PLUGIN_PREFIX: '§7[§6ArdaShops§7]§r '
+SERVER_PREFIX: '§7[§2Ardania§7]§r'
+MONEY_NAME: '§aEuronen§r'
+VALUE_CHANGE: '§3Der Wert wurde erfolgreich geändert. §dUwU§r'
+SHOP_CREATED: '§3Shop wurde erfolgreich erstellt! §dOwO§r'
+ERROR_SHOP_CREATED: '§cDu besitzt bereits einen Shop! §l§a-_-§r'

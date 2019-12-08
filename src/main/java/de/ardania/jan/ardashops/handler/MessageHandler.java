@@ -11,7 +11,7 @@ import java.io.IOException;
 import static de.ardania.jan.ardashops.Main.PLUGIN;
 
 public class MessageHandler {
-    FileConfiguration configuration;
+    public static FileConfiguration MESSAGE;
 
     public MessageHandler() {
         createCustomConfig();
@@ -27,19 +27,12 @@ public class MessageHandler {
             PLUGIN.saveResource("messages.yml", false);
         }
 
-        configuration = new YamlConfiguration();
+        MESSAGE = new YamlConfiguration();
         try {
-            configuration.load(file);
+            MESSAGE.load(file);
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
         return file;
-    }
-
-    /**
-     * @return the yml file
-     */
-    public FileConfiguration getConfiguration() {
-        return configuration;
     }
 }

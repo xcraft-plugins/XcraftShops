@@ -9,4 +9,3 @@ depend:
 
 commands:
   as:
-    usage: /as
