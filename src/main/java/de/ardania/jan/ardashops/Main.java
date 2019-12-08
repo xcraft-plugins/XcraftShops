@@ -51,7 +51,7 @@ public class Main extends JavaPlugin {
                     ");");
 
             DB.query("CREATE TABLE IF NOT EXISTS shop (\n" +
-                    "  s_shopID int PRIMARY KEY,\n" +
+                    "  s_shopID INTEGER PRIMARY KEY,\n" +
                     "  s_shopLocation blob not null,\n" +
                     "  s_o_ownerID uuid,\n" +
                     "  FOREIGN KEY (s_o_ownerID) REFERENCES owner (o_ownerID)\n" +

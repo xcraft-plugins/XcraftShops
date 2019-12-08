@@ -29,7 +29,6 @@
             <version>1.14.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -42,7 +41,6 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>lib.PatPeter.SQLibrary</groupId>
             <artifactId>SQLibrary</artifactId>
@@ -50,13 +48,19 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/SQLibrary-7.1.jar</systemPath>
         </dependency>
-
         <dependency>
             <groupId>io.luminw.xikage.mythicmobs</groupId>
             <artifactId>MythicMobs</artifactId>
             <version>4.7.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/MythicMobs-4.7.0.jar</systemPath>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.10</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
