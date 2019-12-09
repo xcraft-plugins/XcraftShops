@@ -32,8 +32,8 @@ public class CommandHandler implements CommandExecutor {
             if (args.length < 1) HelpCommand.PluginInfo(player);
             else if (args[0].equals("create")) {
                 createCommand.createShop(player);
-            } else if (args[0].equals("open")) {
-                player.openInventory(openCommand.openShop(1));
+            } else if (args[0].equals("open") && !args[1].isEmpty()) {
+                player.openInventory(openCommand.openShop(Integer.parseInt(args[1])));
             }
         }
         return false;

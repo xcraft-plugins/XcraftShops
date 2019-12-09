@@ -7,9 +7,13 @@ import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import javax.sql.rowset.spi.TransactionalWriter;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import static de.ardania.jan.ardashops.Main.DB;
@@ -46,23 +50,36 @@ public class DatabaseHandler {
     }
 
     public Shop getShopWithItems(int shopID) {
-        ResultSet resultSet = null;
+        ResultSet resultSetOfShop = null;
+        ResultSet resultSetOfItem = null;
         Shop shop = null;
         try {
-            resultSet = DB.query("SELECT * FROM item i INNER JOIN shop s ON s.s_shopID=i.i_s_shopID WHERE s_shopID = " + shopID + ";");
+            resultSetOfShop = DB.query("SELECT * FROM shop WHERE s_shopID = " + shopID + ";");
             shop = new Shop();
-            shop.setOwnerUUID(SerializersAndDeserializers.deserializeByteArrayToObject(resultSet.getBytes("s_o_ownerID"), UUID.class));
-            shop.setLocation(SerializersAndDeserializers.deserializeByteArrayToObject(resultSet.getBytes("s_shopLocation"), Location.class));
-            shop.setItems(getItems(resultSet));
+            shop.setShopID(resultSetOfShop.getInt("s_shopID"));
+            shop.setOwnerUUID(SerializersAndDeserializers.deserializeByteArrayToObject(resultSetOfShop.getBytes("s_o_ownerID"), UUID.class));
+            shop.setLocation(SerializersAndDeserializers.deserializeByteArrayToObject(resultSetOfShop.getBytes("s_shopLocation"), Location.class));
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, e.toString());
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    LOGGER.log(Level.SEVERE, e.toString());
-                }
+        }
+        try {
+            resultSetOfItem = DB.query("SELECT * FROM item WHERE i_s_shopID = " + shopID + ";");
+            shop.setItems(getItems(resultSetOfItem));
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString());
+        }
+        if (resultSetOfShop != null) {
+            try {
+                resultSetOfShop.close();
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.toString());
+            }
+        }
+        if (resultSetOfItem != null) {
+            try {
+                resultSetOfShop.close();
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.toString());
             }
         }
         return shop;
