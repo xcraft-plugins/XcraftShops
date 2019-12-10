@@ -17,11 +17,13 @@ public class CommandHandler implements CommandExecutor {
 
     OpenCommand openCommand;
     CreateCommand createCommand;
+    EditCommand editCommand;
     DatabaseHandler databaseHandler;
 
     public CommandHandler() {
         openCommand = new OpenCommand();
         createCommand = new CreateCommand();
+        editCommand = new EditCommand();
         databaseHandler = new DatabaseHandler();
     }
 
@@ -34,6 +36,8 @@ public class CommandHandler implements CommandExecutor {
                 createCommand.createShop(player);
             } else if (args[0].equals("open") && !args[1].isEmpty()) {
                 player.openInventory(openCommand.openShop(Integer.parseInt(args[1])));
+            } else if (args[0].equals("edit") && !args[1].isEmpty()) {
+                player.openInventory(editCommand.openEditInventory(Integer.parseInt(args[1])));
             }
         }
         return false;

@@ -10,52 +10,32 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.Inventory;
 
-import java.util.logging.Level;
+public class EditCommand extends DatabaseHandler implements Listener {
+    private static Inventory currentEditInv;
+    private static Shop currentEditShop;
 
-import static de.ardania.jan.ardashops.Main.LOGGER;
+    public Inventory openEditInventory(int shopID) {
+        currentEditShop = getShopWithItems(shopID);
 
-public class OpenCommand extends DatabaseHandler implements Listener {
+        currentEditInv = Bukkit.createInventory(null, 6 * 9, shopID + "-Edit");
 
-    private static Inventory currentInv;
-    private static Shop currentShop;
-
-    public Inventory openShop(int shopID) {
-        currentShop = getShopWithItems(shopID);
-        //ItemStack i = new ItemStack(Material.DIAMOND, 1);
-        //Item item = Item.builder().shopID(1).item(i).amountInStorage(120).amountToSell(10).pageInInv(1).priceToSell(30).slotInInv(5).build();
-        //insertItem(item);
-
-        currentInv = Bukkit.createInventory(null, 6 * 9, String.valueOf(shopID));
-
-        if (!currentShop.getItems().isEmpty()) {
+        if (!currentEditShop.getItems().isEmpty()) {
             for (Item item :
-                    currentShop.getItems()) {
-                currentInv.setItem(item.getSlotInInv(), item.getItem());
+                    currentEditShop.getItems()) {
+                currentEditInv.setItem(item.getSlotInInv(), item.getItem());
             }
         }
 
-
-        return currentInv;
-    }
-
-    public Item getItemFromShop(int slot) {
-        for (Item i :
-                currentShop.getItems()) {
-            if (i.getSlotInInv() == slot) {
-                return i;
-            }
-        }
-        return null;
+        return currentEditInv;
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         //Überprüfung ob das offene Inv der Shop ist.
-        if (!event.getView().getTitle().equals(Integer.toString(currentShop.getShopID()))) return;
+        if (!event.getView().getTitle().equals(currentEditShop.getShopID() + "-Edit")) return;
 
         //Überprüft ob der Spieler neben dem bereich klickt.
         if (event.getRawSlot() == -999) return;
@@ -70,7 +50,6 @@ public class OpenCommand extends DatabaseHandler implements Listener {
             if (event.getClick().isRightClick() && event.getCursor() != null) event.setCancelled(true);
 
             if (event.getCurrentItem() != null) {
-                Item item = getItemFromShop(event.getSlot()); //Das Item auf das geklickt wurde zum kaufen
                 //TODO Transactions oder anders gesagt...Wenn der Spieler ein Item zum kaufen anklickt
             }
         }
@@ -85,9 +64,10 @@ public class OpenCommand extends DatabaseHandler implements Listener {
 
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
-        if (!event.getView().getTitle().equals(Integer.toString(currentShop.getShopID()))) {
+        if (!event.getView().getTitle().equals(currentEditShop.getShopID() + "-Edit")) {
             return;
         }
         event.setCancelled(true);
     }
+
 }

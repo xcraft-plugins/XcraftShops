@@ -6,10 +6,12 @@ import de.ardania.jan.ardashops.handler.ConfigHandler;
 import de.ardania.jan.ardashops.handler.MessageHandler;
 import de.ardania.jan.ardashops.listeners.OpenListener;
 import lib.PatPeter.SQLibrary.SQLite;
+import lombok.SneakyThrows;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,6 +60,7 @@ public class Main extends JavaPlugin {
                     ");");
 
             DB.query("CREATE TABLE IF NOT EXISTS item (\n" +
+                    "  i_itemID INTEGER PRIMARY KEY,\n" +
                     "  i_amountToSell int,\n" +
                     "  i_amountInStorage int,\n" +
                     "  i_priceToSell int,\n" +

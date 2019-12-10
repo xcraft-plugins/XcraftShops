@@ -22,6 +22,7 @@ import static de.ardania.jan.ardashops.handler.MessageHandler.MESSAGE;
 
 public class DatabaseHandler {
 
+    @NotNull
     private List<Item> getItems(@NotNull ResultSet resultSet) {
         Item item = null;
         List<Item> items = new ArrayList<>();
@@ -240,6 +241,41 @@ public class DatabaseHandler {
                 preparedStatement.close();
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_STATEMENT_CLOSING") + "\n" + e.toString());
+            }
+        }
+    }
+
+    public void updateItem(@NotNull Item item) {
+        PreparedStatement preparedStatement = null;
+        int rowsAffected = 0;
+        try {
+            preparedStatement = DB.getConnection().prepareStatement("UPDATE item " +
+                    "SET i_amountToSell = ?," +
+                    "i_amountInStorage = ?," +
+                    "i_priceToSell = ?," +
+                    "i_slotInInv = ?," +
+                    "i_pageInInv = ?," +
+                    "i_itemStack = ?," +
+                    "i_s_shopID = ?" +
+                    "WHERE i_itemID = ?;");
+            preparedStatement.setInt(1, item.getAmountToSell());
+            preparedStatement.setInt(2, item.getAmountInStorage());
+            preparedStatement.setInt(3, item.getPriceToSell());
+            preparedStatement.setInt(4, item.getSlotInInv());
+            preparedStatement.setInt(5, item.getPageInInv());
+            preparedStatement.setBytes(6, SerializersAndDeserializers.serializeObjectToByteArray(item.getItem()));
+            preparedStatement.setInt(7, item.getShopID());
+
+            rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected == 0) LOGGER.log(Level.INFO, MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString());
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_STATEMENT_CLOSING"));
+                LOGGER.log(Level.SEVERE, e.toString());
             }
         }
     }
