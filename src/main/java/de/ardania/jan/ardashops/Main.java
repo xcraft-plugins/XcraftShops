@@ -1,6 +1,7 @@
 package de.ardania.jan.ardashops;
 
 import de.ardania.jan.ardashops.commands.CommandHandler;
+import de.ardania.jan.ardashops.commands.EditCommand;
 import de.ardania.jan.ardashops.commands.OpenCommand;
 import de.ardania.jan.ardashops.handler.ConfigHandler;
 import de.ardania.jan.ardashops.handler.MessageHandler;
@@ -26,7 +27,7 @@ public class Main extends JavaPlugin {
     public MessageHandler messageHandler;
     public ConfigHandler configHandler;
 
-    public void onEnable(){
+    public void onEnable() {
         //Setter
         PLUGIN = this;
         LOGGER = getLogger();
@@ -36,7 +37,8 @@ public class Main extends JavaPlugin {
         //Announcer
         announcer();
         //Commands & Listeners
-        getServer().getPluginManager().registerEvents(new OpenCommand(), this);
+        //getServer().getPluginManager().registerEvents(new OpenCommand(), this);
+        getServer().getPluginManager().registerEvents(new EditCommand(), this);
         getCommand("as").setExecutor(commandHandler);
         //DB Stuff
         sqlConnection();

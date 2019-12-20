@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -35,9 +36,20 @@ public class CommandHandler implements CommandExecutor {
             else if (args[0].equals("create")) {
                 createCommand.createShop(player);
             } else if (args[0].equals("open") && !args[1].isEmpty()) {
-                player.openInventory(openCommand.openShop(Integer.parseInt(args[1])));
+                Inventory invToOpen = openCommand.openShop(Integer.parseInt(args[1]));
+                if (invToOpen != null) {
+                    player.openInventory(invToOpen);
+                } else {
+                    player.sendMessage("Shop nicht vorhanden");
+                }
+
             } else if (args[0].equals("edit") && !args[1].isEmpty()) {
-                player.openInventory(editCommand.openEditInventory(Integer.parseInt(args[1])));
+                Inventory invToOpen = editCommand.openEditInventory(Integer.parseInt(args[1]));
+                if (invToOpen != null) {
+                    player.openInventory(invToOpen);
+                } else {
+                    player.sendMessage("Shop nicht vorhanden");
+                }
             }
         }
         return false;

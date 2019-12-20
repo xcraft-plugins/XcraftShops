@@ -24,9 +24,10 @@ public class OpenCommand extends DatabaseHandler implements Listener {
 
     public Inventory openShop(int shopID) {
         currentShop = getShopWithItems(shopID);
-        //ItemStack i = new ItemStack(Material.DIAMOND, 1);
-        //Item item = Item.builder().shopID(1).item(i).amountInStorage(120).amountToSell(10).pageInInv(1).priceToSell(30).slotInInv(5).build();
-        //insertItem(item);
+
+        if (currentShop == null) {
+            return null;
+        }
 
         currentInv = Bukkit.createInventory(null, 6 * 9, String.valueOf(shopID));
 
@@ -78,6 +79,7 @@ public class OpenCommand extends DatabaseHandler implements Listener {
         if (event.getClickedInventory().equals(event.getView().getBottomInventory())) {
             //Überprüft ob der Spieler ein Item mittels Shift Linksklick verschieben will
             if (event.getClick().isShiftClick()) event.setCancelled(true);
+            event.setCancelled(true);
         }
         //Überprüfung ob der Spieler eine Zahl drückt um somit Items zwischen den Invs zu tauschen.
         if (event.getClick().equals(ClickType.NUMBER_KEY)) event.setCancelled(true);

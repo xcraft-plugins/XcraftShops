@@ -56,6 +56,9 @@ public class DatabaseHandler {
         Shop shop = null;
         try {
             resultSetOfShop = DB.query("SELECT * FROM shop WHERE s_shopID = " + shopID + ";");
+            if (!resultSetOfShop.next()) {
+                return null;
+            }
             shop = new Shop();
             shop.setShopID(resultSetOfShop.getInt("s_shopID"));
             shop.setOwnerUUID(SerializersAndDeserializers.deserializeByteArrayToObject(resultSetOfShop.getBytes("s_o_ownerID"), UUID.class));
