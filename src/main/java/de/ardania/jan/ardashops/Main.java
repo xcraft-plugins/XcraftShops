@@ -1,19 +1,13 @@
 package de.ardania.jan.ardashops;
 
 import de.ardania.jan.ardashops.commands.CommandHandler;
-import de.ardania.jan.ardashops.commands.EditCommand;
-import de.ardania.jan.ardashops.commands.OpenCommand;
+import de.ardania.jan.ardashops.commands.EditingShop;
 import de.ardania.jan.ardashops.handler.ConfigHandler;
 import de.ardania.jan.ardashops.handler.MessageHandler;
-import de.ardania.jan.ardashops.listeners.OpenListener;
 import lib.PatPeter.SQLibrary.SQLite;
-import lombok.SneakyThrows;
-import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Main extends JavaPlugin {
@@ -38,7 +32,7 @@ public class Main extends JavaPlugin {
         announcer();
         //Commands & Listeners
         //getServer().getPluginManager().registerEvents(new OpenCommand(), this);
-        getServer().getPluginManager().registerEvents(new EditCommand(), this);
+        getServer().getPluginManager().registerEvents(new EditingShop(), this);
         getCommand("as").setExecutor(commandHandler);
         //DB Stuff
         sqlConnection();

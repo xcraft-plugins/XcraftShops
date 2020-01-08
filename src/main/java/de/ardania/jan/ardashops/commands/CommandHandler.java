@@ -1,30 +1,22 @@
 package de.ardania.jan.ardashops.commands;
 
 import de.ardania.jan.ardashops.handler.DatabaseHandler;
-import org.bukkit.Material;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.ItemDespawnEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.sql.SQLException;
-import java.util.Arrays;
 
 public class CommandHandler implements CommandExecutor {
 
-    OpenCommand openCommand;
-    CreateCommand createCommand;
-    EditCommand editCommand;
+    OpenShopCommand openCommand;
+    CreateShopCommand createCommand;
+    EditingShop editCommand;
     DatabaseHandler databaseHandler;
 
     public CommandHandler() {
-        openCommand = new OpenCommand();
-        createCommand = new CreateCommand();
-        editCommand = new EditCommand();
+        openCommand = new OpenShopCommand();
+        createCommand = new CreateShopCommand();
+        editCommand = new EditingShop();
         databaseHandler = new DatabaseHandler();
     }
 
@@ -32,7 +24,7 @@ public class CommandHandler implements CommandExecutor {
         Player player = sender instanceof Player ? (Player) sender : null;
 
         if (player != null) {
-            if (args.length < 1) HelpCommand.PluginInfo(player);
+            if (args.length < 1) PluginHelpCommand.PluginInfo(player);
             else if (args[0].equals("create")) {
                 createCommand.createShop(player);
             } else if (args[0].equals("open") && !args[1].isEmpty()) {

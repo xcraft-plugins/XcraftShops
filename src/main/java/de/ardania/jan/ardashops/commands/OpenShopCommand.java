@@ -17,7 +17,7 @@ import java.util.logging.Level;
 
 import static de.ardania.jan.ardashops.Main.LOGGER;
 
-public class OpenCommand extends DatabaseHandler implements Listener {
+public class OpenShopCommand extends DatabaseHandler implements Listener {
 
     private static Inventory currentInv;
     private static Shop currentShop;

@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import static de.ardania.jan.ardashops.Main.LOGGER;
 import static de.ardania.jan.ardashops.handler.MessageHandler.MESSAGE;
 
-public class CreateCommand extends DatabaseHandler {
+public class CreateShopCommand extends DatabaseHandler {
     public void createShop(Player player) {
         Shop shop = new Shop();
         shop.setOwnerUUID(player.getUniqueId());
