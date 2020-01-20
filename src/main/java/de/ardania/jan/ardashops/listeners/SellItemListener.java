@@ -10,10 +10,10 @@ import static de.ardania.jan.ardashops.Main.activeInvInfoDataMap;
 public class SellItemListener implements Listener {
     @EventHandler
     public void onItemSellEvent(InventoryClickEvent event) {
+        ListenerUtil.basicInventoryClickEventChecks(event);
         if (activeInvInfoDataMap.containsKey(event.getWhoClicked())) {
-
+            //TODO: Functionality to Sell Items(maybe open merge Buy and Sell Functionality into one Inv)
         }
 
-        ListenerUtil.basicInventoryClickEventChecks(event);
     }
 }

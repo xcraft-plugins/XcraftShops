@@ -5,8 +5,6 @@ import de.ardania.jan.ardashops.handler.DatabaseHandler;
 import lombok.extern.log4j.Log4j2;
 import org.bukkit.entity.Player;
 
-import java.util.logging.Level;
-
 import static de.ardania.jan.ardashops.handler.MessageHandler.MESSAGE;
 
 @Log4j2
@@ -17,6 +15,7 @@ public class CreateShopCommand extends DatabaseHandler {
         shop.setLocation(player.getLocation());
         if (!ownerExist(player.getUniqueId())) insertOwner(player.getUniqueId());
         insertShop(shop);
+        //TODO: Implement MythicMobs functionality
         //ActiveMob mob = MythicMobs.inst().getMobManager().spawnMob("Shop", player.getLocation());
         //ItemStack item = new ItemStack(Material.DIAMOND, 1);
         //item.getItemMeta().setDisplayName(player.getUniqueId().toString());
