@@ -1,26 +1,26 @@
 package de.ardania.jan.ardashops.commands;
 
 import de.ardania.jan.ardashops.handler.DatabaseHandler;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 public class CommandHandler implements CommandExecutor {
 
-    OpenShopCommand openCommand;
+    OpenCommand openCommand;
     CreateShopCommand createCommand;
-    EditingShop editCommand;
+    EditCommand editCommand;
     DatabaseHandler databaseHandler;
 
     public CommandHandler() {
-        openCommand = new OpenShopCommand();
+        openCommand = new OpenCommand();
         createCommand = new CreateShopCommand();
-        editCommand = new EditingShop();
+        editCommand = new EditCommand();
         databaseHandler = new DatabaseHandler();
     }
 
-    public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player = sender instanceof Player ? (Player) sender : null;
 
         if (player != null) {
@@ -28,20 +28,9 @@ public class CommandHandler implements CommandExecutor {
             else if (args[0].equals("create")) {
                 createCommand.createShop(player);
             } else if (args[0].equals("open") && !args[1].isEmpty()) {
-                Inventory invToOpen = openCommand.openShop(Integer.parseInt(args[1]));
-                if (invToOpen != null) {
-                    player.openInventory(invToOpen);
-                } else {
-                    player.sendMessage("Shop nicht vorhanden");
-                }
-
+                player.openInventory(openCommand.openShopInventory(Integer.parseInt(args[1]), player));
             } else if (args[0].equals("edit") && !args[1].isEmpty()) {
-                Inventory invToOpen = editCommand.openEditInventory(Integer.parseInt(args[1]));
-                if (invToOpen != null) {
-                    player.openInventory(invToOpen);
-                } else {
-                    player.sendMessage("Shop nicht vorhanden");
-                }
+                player.openInventory(editCommand.openEditInventory(Integer.parseInt(args[1]), player));
             }
         }
         return false;

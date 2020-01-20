@@ -4,9 +4,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
-public class BuyItemListener implements Listener {
+public class ShopInvItemListener implements Listener {
     @EventHandler
-    public void onItemBuyEvent(InventoryClickEvent event) {
+    public void onShopInvItemClick(InventoryClickEvent event) {
 
     }
 }

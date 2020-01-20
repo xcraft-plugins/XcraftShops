@@ -1,38 +1,48 @@
 package de.ardania.jan.ardashops;
 
 import de.ardania.jan.ardashops.commands.CommandHandler;
-import de.ardania.jan.ardashops.commands.EditingShop;
+import de.ardania.jan.ardashops.commands.OpenCommand;
 import de.ardania.jan.ardashops.handler.ConfigHandler;
+import de.ardania.jan.ardashops.handler.ListenerHandler;
 import de.ardania.jan.ardashops.handler.MessageHandler;
+import de.ardania.jan.ardashops.util.ActiveInvInfoData;
 import lib.PatPeter.SQLibrary.SQLite;
+import lombok.extern.log4j.Log4j2;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
-import java.util.logging.Logger;
+import java.util.List;
+import java.util.Map;
 
+@Log4j2
 public class Main extends JavaPlugin {
 
     public static JavaPlugin PLUGIN;
-    public static Logger LOGGER;
 
     public static SQLite DB;
+
+    public static Map<Player, ActiveInvInfoData> activeInvInfoDataMap;
 
     public CommandHandler commandHandler;
     public MessageHandler messageHandler;
     public ConfigHandler configHandler;
+    public ListenerHandler listenerHandler;
 
     public void onEnable() {
         //Setter
         PLUGIN = this;
-        LOGGER = getLogger();
         commandHandler = new CommandHandler();
         messageHandler = new MessageHandler();
         configHandler = new ConfigHandler();
+        listenerHandler = new ListenerHandler();
+
         //Announcer
         announcer();
+
         //Commands & Listeners
         //getServer().getPluginManager().registerEvents(new OpenCommand(), this);
-        getServer().getPluginManager().registerEvents(new EditingShop(), this);
+        //getServer().getPluginManager().registerEvents(new OpenCommand(), this);
         getCommand("as").setExecutor(commandHandler);
         //DB Stuff
         sqlConnection();
@@ -44,42 +54,42 @@ public class Main extends JavaPlugin {
     }
 
     private void sqlTableCreation() throws SQLException {
-            DB.query("CREATE TABLE IF NOT EXISTS owner (\n" +
-                    "  o_ownerID blob PRIMARY KEY\n" +
-                    ");");
+        DB.query("CREATE TABLE IF NOT EXISTS owner (\n" +
+                "  o_ownerID blob PRIMARY KEY\n" +
+                ");");
 
-            DB.query("CREATE TABLE IF NOT EXISTS shop (\n" +
-                    "  s_shopID INTEGER PRIMARY KEY,\n" +
-                    "  s_shopLocation blob not null,\n" +
-                    "  s_o_ownerID uuid,\n" +
-                    "  FOREIGN KEY (s_o_ownerID) REFERENCES owner (o_ownerID)\n" +
-                    ");");
+        DB.query("CREATE TABLE IF NOT EXISTS shop (\n" +
+                "  s_shopID INTEGER PRIMARY KEY,\n" +
+                "  s_shopLocation blob not null,\n" +
+                "  s_o_ownerID uuid,\n" +
+                "  FOREIGN KEY (s_o_ownerID) REFERENCES owner (o_ownerID)\n" +
+                ");");
 
-            DB.query("CREATE TABLE IF NOT EXISTS item (\n" +
-                    "  i_itemID INTEGER PRIMARY KEY,\n" +
-                    "  i_amountToSell int,\n" +
-                    "  i_amountInStorage int,\n" +
-                    "  i_priceToSell int,\n" +
-                    "  i_slotInInv int,\n" +
-                    "  i_pageInInv int,\n" +
-                    "  i_itemStack blob,\n" +
-                    "  i_s_shopID int,\n" +
-                    "  FOREIGN KEY (i_s_shopID) REFERENCES shop (s_shopID)\n" +
-                    ");");
+        DB.query("CREATE TABLE IF NOT EXISTS item (\n" +
+                "  i_itemID INTEGER PRIMARY KEY,\n" +
+                "  i_amountToSell int,\n" +
+                "  i_amountInStorage int,\n" +
+                "  i_priceToSell int,\n" +
+                "  i_slotInInv int,\n" +
+                "  i_pageInInv int,\n" +
+                "  i_itemStack blob,\n" +
+                "  i_s_shopID int,\n" +
+                "  FOREIGN KEY (i_s_shopID) REFERENCES shop (s_shopID)\n" +
+                ");");
     }
 
     private void sqlConnection(){
-        DB = new SQLite(LOGGER, "ArdaShops", getDataFolder().getAbsolutePath(), "shops", ".db");
+        DB = new SQLite(getLogger(), "ArdaShops", getDataFolder().getAbsolutePath(), "shops", ".db");
         try {
             DB.open();
         } catch (Exception e) {
-            LOGGER.info(e.getMessage());
+            log.error(e.getMessage());
             getPluginLoader().disablePlugin(PLUGIN);
         }
     }
 
     private void announcer(){
-        LOGGER.info("\n"+"                  _        _____ _                     \n" +
+        log.info("\n" + "                  _        _____ _                     \n" +
                 "    /\\           | |      / ____| |                    \n" +
                 "   /  \\   _ __ __| | __ _| (___ | |__   ___  _ __  ___ \n" +
                 "  / /\\ \\ | '__/ _` |/ _` |\\___ \\| '_ \\ / _ \\| '_ \\/ __|\n" +

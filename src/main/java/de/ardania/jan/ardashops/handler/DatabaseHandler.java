@@ -3,23 +3,22 @@ package de.ardania.jan.ardashops.handler;
 import de.ardania.jan.ardashops.entities.Item;
 import de.ardania.jan.ardashops.entities.Shop;
 import de.ardania.jan.ardashops.util.SerializersAndDeserializers;
+import lombok.extern.log4j.Log4j2;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import static de.ardania.jan.ardashops.Main.DB;
-import static de.ardania.jan.ardashops.Main.LOGGER;
 import static de.ardania.jan.ardashops.handler.MessageHandler.MESSAGE;
 
+@Log4j2
 public class DatabaseHandler {
 
     @NotNull
@@ -39,7 +38,7 @@ public class DatabaseHandler {
                 item.setItem(getItemStackFromSQL(resultSet));
                 items.add(item);
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.toString());
+                log.error(e.toString());
             }
         }
         return items;
@@ -64,26 +63,26 @@ public class DatabaseHandler {
             shop.setOwnerUUID(SerializersAndDeserializers.deserializeByteArrayToObject(resultSetOfShop.getBytes("s_o_ownerID"), UUID.class));
             shop.setLocation(SerializersAndDeserializers.deserializeByteArrayToObject(resultSetOfShop.getBytes("s_shopLocation"), Location.class));
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString());
+            log.error(e.toString());
         }
         try {
             resultSetOfItem = DB.query("SELECT * FROM item WHERE i_s_shopID = " + shopID + ";");
             shop.setItems(getItems(resultSetOfItem));
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, e.toString());
+            log.error(e.toString());
         }
         if (resultSetOfShop != null) {
             try {
                 resultSetOfShop.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.toString());
+                log.error(e.toString());
             }
         }
         if (resultSetOfItem != null) {
             try {
                 resultSetOfShop.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, e.toString());
+                log.error(e.toString());
             }
         }
         return shop;
@@ -112,15 +111,15 @@ public class DatabaseHandler {
             preparedStatement = DB.getConnection().prepareStatement("INSERT INTO owner(o_ownerID) VALUES(?)");
             preparedStatement.setBytes(1, SerializersAndDeserializers.serializeObjectToByteArray(ownerID));
             rows = preparedStatement.executeUpdate();
-            if (rows != 1) LOGGER.log(Level.INFO, MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
+            if (rows != 1) log.info(MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_OWNER_INSERTION"));
-            LOGGER.log(Level.SEVERE, e.toString());
+            log.error(MESSAGE.getString("ERROR_OWNER_INSERTION"));
+            log.error(e.toString());
         } finally {
             try {
                 preparedStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_STATEMENT_CLOSING") + "\n" + e.toString());
+                log.error(MESSAGE.getString("ERROR_STATEMENT_CLOSING") + "\n" + e.toString());
             }
         }
 
@@ -134,16 +133,16 @@ public class DatabaseHandler {
             preparedStatement.setBytes(1, SerializersAndDeserializers.serializeObjectToByteArray(shop.getLocation()));
             preparedStatement.setBytes(2, SerializersAndDeserializers.serializeObjectToByteArray(shop.getOwnerUUID()));
             rows = preparedStatement.executeUpdate();
-            if (rows == 0) LOGGER.log(Level.INFO, MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
+            if (rows == 0) if (rows != 1) log.info(MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_SHOP_INSERTION"));
-            LOGGER.log(Level.SEVERE, e.toString());
+            log.error(MESSAGE.getString("ERROR_ShOP_INSERTION"));
+            log.error(e.toString());
         } finally {
             try {
                 preparedStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_STATEMENT_CLOSING"));
-                LOGGER.log(Level.SEVERE, e.toString());
+                log.error(MESSAGE.getString("ERROR_STATEMENT_CLOSING"));
+                log.error(e.toString());
             }
         }
 
@@ -162,22 +161,22 @@ public class DatabaseHandler {
             preparedStatement.setBytes(6, SerializersAndDeserializers.serializeObjectToByteArray(item.getItem()));
             preparedStatement.setInt(7, item.getShopID());
             rows = preparedStatement.executeUpdate();
-            if (rows == 0) LOGGER.log(Level.INFO, MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
+            if (rows == 0) if (rows != 1) log.info(MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_ITEM_INSERTION"));
-            LOGGER.log(Level.SEVERE, e.toString());
+            log.error(MESSAGE.getString("ERROR_ITEM_INSERTION"));
+            log.error(e.toString());
         } finally {
             try {
                 preparedStatement.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, MESSAGE.getString("ERROR_STATEMENT_CLOSING"));
-                LOGGER.log(Level.SEVERE, e.toString());
+                log.error(MESSAGE.getString("ERROR_STATEMENT_CLOSING"));
+                log.error(e.toString());
             }
         }
 
     }
 
-    public void deleteShop(@NotNull Shop shop) {
+    /*public void deleteShop(@NotNull Shop shop) {
         Connection connection = DB.getConnection();
         int deletedRowsFromShop = 0;
         int deletedRowsFromItem = 0;
@@ -281,5 +280,5 @@ public class DatabaseHandler {
                 LOGGER.log(Level.SEVERE, e.toString());
             }
         }
-    }
+    }*/
 }
