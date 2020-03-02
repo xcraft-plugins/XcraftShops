@@ -11,4 +11,5 @@ public class ActiveInvInfoData {
     private Shop shop;
     private Inventory shopInv;
     private Inventory changePriceInv;
+    private Inventory buyAndSellInv;
 }

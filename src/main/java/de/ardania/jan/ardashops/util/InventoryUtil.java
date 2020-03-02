@@ -16,6 +16,7 @@ public class InventoryUtil {
      * ({@link Material#GOLD_BLOCK}) on slot 40 for adding 5 to the price.
      * ({@link Material#DIAMOND_BLOCK}) on slot 42 for adding 10 to the price.
      *
+     * @param shopID - the ID of the current shop
      * @return the ({@link Inventory}) that represent the menu to set the price.
      */
     public static Inventory initPriceInv(int shopID) {
@@ -42,6 +43,36 @@ public class InventoryUtil {
         ItemStack raisePriceTen = new ItemStack(Material.DIAMOND_BLOCK);
         raisePriceTen.getItemMeta().setLore(Arrays.asList("Increase price by 10"));
         inv.setItem(42, raisePriceTen);
+
+        return inv;
+    }
+
+    /**
+     * Initialise the ({@link Inventory}) to buy or sell items.
+     * {@link Material#EMERALD_BLOCK} on slot 20 to buy items from the shop.
+     * {@link Material#GOLD_BLOCK} on slot 24 to sell items to the shop.
+     * {@link Material#BARRIER} on slot 53 to go back to the shop.
+     *
+     * @param shopID - the ID of the current shop
+     * @return the ({@link Inventory}) that represent the menu to buy or sell items.
+     */
+    public static Inventory initBuyAndSellInv(int shopID) {
+        //Initialise empty Inventory
+        Inventory inv = Bukkit.createInventory(null, 6 * 9, Integer.toString(shopID) + "-BuyOrSell");
+        //Sell current Item to Shop
+        ItemStack sell = new ItemStack(Material.EMERALD_BLOCK);
+        sell.getItemMeta().setDisplayName("Click to Buy!");
+        sell.getItemMeta().setLore(Arrays.asList("Klicke um von diesem Shop zu kaufen!"));
+        inv.setItem(20, sell);
+        //Buy current Item from Shop
+        ItemStack buy = new ItemStack(Material.GOLD_BLOCK);
+        buy.getItemMeta().setDisplayName("Click to Sell!");
+        buy.getItemMeta().setLore(Arrays.asList("Klicke um an diesen Shop zu verkaufen!"));
+        inv.setItem(24, buy);
+        //Abort Buy or Sell
+        ItemStack exit = new ItemStack(Material.BARRIER);
+        exit.getItemMeta().setDisplayName("Click to return");
+        inv.setItem(53, exit);
 
         return inv;
     }

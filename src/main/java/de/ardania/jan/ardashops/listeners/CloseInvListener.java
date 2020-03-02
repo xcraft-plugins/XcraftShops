@@ -9,6 +9,7 @@ import static de.ardania.jan.ardashops.Main.activeInvInfoDataMap;
 public class CloseInvListener implements Listener {
     @EventHandler
     public void onInvClose(InventoryCloseEvent event) {
+        //TODO: Check if Player was in EditShopInv and if so save Inventory to Database
         if (activeInvInfoDataMap.containsKey(event.getPlayer())) {
             activeInvInfoDataMap.remove(event.getPlayer());
         }

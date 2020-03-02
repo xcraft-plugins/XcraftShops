@@ -1,7 +1,9 @@
 package de.ardania.jan.ardashops.handler;
 
-import de.ardania.jan.ardashops.listeners.BuyItemListener;
-import de.ardania.jan.ardashops.listeners.SellItemListener;
+import de.ardania.jan.ardashops.listeners.BuyAndSellInvListener;
+import de.ardania.jan.ardashops.listeners.CloseInvListener;
+import de.ardania.jan.ardashops.listeners.EditInvItemListener;
+import de.ardania.jan.ardashops.listeners.ShopInvItemListener;
 import org.bukkit.event.Listener;
 
 import static de.ardania.jan.ardashops.Main.PLUGIN;
@@ -9,8 +11,10 @@ import static de.ardania.jan.ardashops.Main.PLUGIN;
 public class ListenerHandler {
 
     public ListenerHandler() {
-        registerListener(new BuyItemListener());
-        registerListener(new SellItemListener());
+        registerListener(new BuyAndSellInvListener());
+        registerListener(new CloseInvListener());
+        registerListener(new EditInvItemListener());
+        registerListener(new ShopInvItemListener());
     }
 
     /**

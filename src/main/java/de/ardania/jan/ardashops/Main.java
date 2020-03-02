@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,7 @@ public class Main extends JavaPlugin {
         messageHandler = new MessageHandler();
         configHandler = new ConfigHandler();
         listenerHandler = new ListenerHandler();
+        activeInvInfoDataMap = new HashMap<>();
 
         //Announcer
         announcer();

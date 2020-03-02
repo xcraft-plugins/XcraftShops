@@ -135,7 +135,7 @@ public class DatabaseHandler {
             rows = preparedStatement.executeUpdate();
             if (rows == 0) if (rows != 1) log.info(MESSAGE.getString("ERROR_NO_ROWS_AFFECTED"));
         } catch (SQLException e) {
-            log.error(MESSAGE.getString("ERROR_ShOP_INSERTION"));
+            log.error(MESSAGE.getString("ERROR_SHOP_INSERTION"));
             log.error(e.toString());
         } finally {
             try {
