@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Item {
+    private int itemID;
     private ItemStack item;
     private int amountToSell;
     private int priceToSell;

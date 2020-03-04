@@ -29,6 +29,7 @@ public class DatabaseHandler {
             try {
                 if (!resultSet.next()) break;
                 item = new Item();
+                item.setItemID(resultSet.getInt("i_itemID"));
                 item.setSlotInInv(resultSet.getInt("i_slotInInv"));
                 item.setPriceToSell(resultSet.getInt("i_priceToSell"));
                 item.setAmountToSell(resultSet.getInt("i_amountToSell"));
@@ -174,6 +175,66 @@ public class DatabaseHandler {
             }
         }
 
+    }
+
+    public void updateItemAmount(@NotNull Item item) {
+        PreparedStatement preparedStatement = null;
+        int rows = 0;
+        try {
+            preparedStatement = DB.getConnection().prepareStatement("UPDATE item SET i_amountToSell = ? WHERE i_itemID = ?;");
+            preparedStatement.setInt(1, item.getAmountToSell());
+            preparedStatement.setInt(2, item.getItemID());
+        } catch (SQLException e) {
+            log.error(MESSAGE.getString("ERROR_ITEM_UPDATEAMOUNT"));
+            log.error(e.toString());
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                log.error(MESSAGE.getString("ERROR_STATEMENT_CLOSING"));
+                log.error(e.toString());
+            }
+        }
+    }
+
+    public void updateItemPrice(@NotNull Item item) {
+        PreparedStatement preparedStatement = null;
+        int rows = 0;
+        try {
+            preparedStatement = DB.getConnection().prepareStatement("UPDATE item SET i_priceToSell = ? WHERE i_itemID = ?;");
+            preparedStatement.setInt(1, item.getPriceToSell());
+            preparedStatement.setInt(2, item.getItemID());
+        } catch (SQLException e) {
+            log.error(MESSAGE.getString("ERROR_ITEM_UPDATEPRICE"));
+            log.error(e.toString());
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                log.error(MESSAGE.getString("ERROR_STATEMENT_CLOSING"));
+                log.error(e.toString());
+            }
+        }
+    }
+
+    public void updateItemStorage(@NotNull Item item) {
+        PreparedStatement preparedStatement = null;
+        int rows = 0;
+        try {
+            preparedStatement = DB.getConnection().prepareStatement("UPDATE item SET i_amountInStorage = ? WHERE i_itemID = ?;");
+            preparedStatement.setInt(1, item.getAmountInStorage());
+            preparedStatement.setInt(2, item.getItemID());
+        } catch (SQLException e) {
+            log.error(MESSAGE.getString("ERROR_ITEM_UPDATESTORAGE"));
+            log.error(e.toString());
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                log.error(MESSAGE.getString("ERROR_STATEMENT_CLOSING"));
+                log.error(e.toString());
+            }
+        }
     }
 
     /*public void deleteShop(@NotNull Shop shop) {
