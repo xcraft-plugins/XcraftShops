@@ -54,12 +54,15 @@ public class EditInvItemListener extends DatabaseHandler implements Listener {
             } else if (event.getCursor().getType() == Material.AIR && event.getCurrentItem() != null) {
                 activeInvInfoDataMap.get(event.getWhoClicked()).setItemInHand(event.getCurrentItem());
                 activeInvInfoDataMap.get(event.getWhoClicked()).setSlotInInv(event.getSlot());
+                event.getWhoClicked().sendMessage(activeInvInfoDataMap.get(event.getWhoClicked()).getItemInHand().toString() + "1");
             } else if (event.getCursor().getType() != Material.AIR && event.getCurrentItem() == null) {
                 activeInvInfoDataMap.get(event.getWhoClicked()).setItemInHand(null);
                 activeInvInfoDataMap.get(event.getWhoClicked()).setSlotInInv(-1);
+                event.getWhoClicked().sendMessage(activeInvInfoDataMap.get(event.getWhoClicked()).getItemInHand().toString() + "2");
             } else if (event.getCursor().getType() != Material.AIR && event.getCurrentItem() != null) {
                 activeInvInfoDataMap.get(event.getWhoClicked()).setItemInHand(event.getCurrentItem());
                 activeInvInfoDataMap.get(event.getWhoClicked()).setSlotInInv(event.getSlot());
+                event.getWhoClicked().sendMessage(activeInvInfoDataMap.get(event.getWhoClicked()).getItemInHand().toString() + "3");
             } else if (event.getCursor().getType() != Material.AIR && event.getCurrentItem() != null && event.getCursor().getType() == event.getCurrentItem().getType()) {
                 event.setCancelled(true);
                 return;
@@ -67,20 +70,22 @@ public class EditInvItemListener extends DatabaseHandler implements Listener {
 
 
         } else if (event.getClickedInventory().getType().equals(InventoryType.CHEST)) {
-            if (event.getCursor().getType() == Material.AIR) {
-                event.setCancelled(true);
-                return;
-            } else if (event.getCursor().getType() != Material.AIR && event.getCurrentItem() != null && event.getCursor().getType() != event.getCurrentItem().getType()) {
-                event.setCancelled(true);
-                return;
-            } else if (event.getCursor().getType() != Material.AIR && event.getCurrentItem() != null && event.getCursor().getType() == event.getCurrentItem().getType()) {
-                if (event.getCurrentItem().getAmount() != event.getCursor().getAmount()) {
+            if (event.isLeftClick()) {
+                if (event.getCursor().getType() == Material.AIR) {
+                    event.setCancelled(true);
+                    return;
+                } else if (event.getCursor().getType() != Material.AIR && event.getCurrentItem() != null && event.getCursor().getType() != event.getCurrentItem().getType()) {
+                    event.setCancelled(true);
+                    return;
+                } else if (event.getCursor().getType() != Material.AIR && event.getCurrentItem() != null && event.getCursor() == event.getCurrentItem() && event.getCurrentItem().getAmount() != event.getCursor().getAmount()) {
+
                     ItemStack itemInHand = activeInvInfoDataMap.get(event.getWhoClicked()).getItemInHand();
                     ItemStack itemInInv = event.getCurrentItem();
                     int slotInInv = event.getSlot();
 
                     activeInvInfoDataMap.get(event.getWhoClicked()).getShopInv().setItem(slotInInv, itemInHand);
                     activeInvInfoDataMap.get(event.getWhoClicked()).setItemInHand(null);
+                    event.getWhoClicked().sendMessage(activeInvInfoDataMap.get(event.getWhoClicked()).getItemInHand().toString() + "4");
                     event.getWhoClicked().getInventory().setItem(activeInvInfoDataMap.get(event.getWhoClicked()).getSlotInInv(), itemInInv);
                     activeInvInfoDataMap.get(event.getWhoClicked()).setSlotInInv(-1);
 
@@ -99,34 +104,39 @@ public class EditInvItemListener extends DatabaseHandler implements Listener {
                             .filter(item -> item.getSlotInInv() == event.getSlot())
                             .findFirst()
                             .get());
-                } else if (event.getCursor().getType() != Material.AIR && event.getCurrentItem() != null) {
-                    ItemStack itemInHand = activeInvInfoDataMap.get(event.getWhoClicked()).getItemInHand();
-                    int slot = activeInvInfoDataMap.get(event.getWhoClicked()).getSlotInInv();
-                    activeInvInfoDataMap.get(event.getWhoClicked()).getShopInv().setItem(slot, itemInHand);
-                    event.setCursor(null);
-                    activeInvInfoDataMap.get(event.getWhoClicked()).setItemInHand(null);
-                    activeInvInfoDataMap.get(event.getWhoClicked()).setSlotInInv(-1);
+                } else if (event.getCursor().getType() != Material.AIR) {
+                    if (event.getCurrentItem() == null) {
+                        ItemStack itemInHand = activeInvInfoDataMap.get(event.getWhoClicked()).getItemInHand();
+                        int slot = activeInvInfoDataMap.get(event.getWhoClicked()).getSlotInInv();
+                        activeInvInfoDataMap.get(event.getWhoClicked()).getShopInv().setItem(slot, itemInHand);
+                        event.setCursor(null);
+                        event.getWhoClicked().sendMessage(activeInvInfoDataMap.get(event.getWhoClicked()).getItemInHand().toString() + "5");
+                        activeInvInfoDataMap.get(event.getWhoClicked()).setItemInHand(null);
+                        activeInvInfoDataMap.get(event.getWhoClicked()).setSlotInInv(-1);
 
-                    Item newItem = new Item();
-                    newItem.setItem(itemInHand);
-                    newItem.setPriceToSell(0);
-                    newItem.setAmountInStorage(0);
-                    newItem.setAmountToSell(itemInHand.getAmount());
-                    newItem.setSlotInInv(slot);
-                    newItem.setPageInInv(1);
-                    newItem.setShopID(activeInvInfoDataMap.get(event.getWhoClicked()).getShop().getShopID());
+                        Item newItem = new Item();
+                        newItem.setItem(itemInHand);
+                        newItem.setPriceToSell(0);
+                        newItem.setAmountInStorage(0);
+                        newItem.setAmountToSell(itemInHand.getAmount());
+                        newItem.setSlotInInv(slot);
+                        newItem.setPageInInv(1);
+                        newItem.setShopID(activeInvInfoDataMap.get(event.getWhoClicked()).getShop().getShopID());
 
-                    activeInvInfoDataMap.get(event.getWhoClicked()).getShop().getItems().add(newItem);
+                        activeInvInfoDataMap.get(event.getWhoClicked()).getShop().getItems().add(newItem);
+                        activeInvInfoDataMap.get(event.getWhoClicked()).setItemToChangePrice(newItem);
 
-                    insertItem(newItem);
+                        insertItem(newItem);
 
-                    event.getWhoClicked().openInventory(activeInvInfoDataMap.get(event.getWhoClicked()).getChangePriceInv());
-                    //TODO Define Item to change Price...
-
+                        event.getWhoClicked().openInventory(activeInvInfoDataMap.get(event.getWhoClicked()).getChangePriceInv());
+                    }
                 } else {
                     event.setCancelled(true);
                     return;
                 }
+            } else {
+                event.setCancelled(true);
+                return;
             }
         }
     }

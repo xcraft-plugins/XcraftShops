@@ -5,10 +5,12 @@ import de.ardania.jan.ardashops.entities.Shop;
 import de.ardania.jan.ardashops.handler.DatabaseHandler;
 import de.ardania.jan.ardashops.util.ActiveInvInfoData;
 import de.ardania.jan.ardashops.util.InventoryUtil;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import static de.ardania.jan.ardashops.Main.PLUGIN;
 import static de.ardania.jan.ardashops.Main.activeInvInfoDataMap;
 
 public class EditCommand extends DatabaseHandler {
